@@ -12,10 +12,6 @@ def run():
     p2 = [(0,7)]
     turn = 1
     while len(p1+p2)<56:
-        tab2 = []
-        for i in reversed(tab): tab2+=list(reversed(i))
-        tab2 = np.array(tab2, dtype='<U11')
-        tab2 = np.resize(tab2,(7,8))
         if turn%2==1:
             print(f"\nPlayer 1\t [ {len(p1)} ]\n{', '.join(colours)}")
             c = input("Pick a colour ")[:3]
@@ -29,6 +25,11 @@ def run():
                     if (tab[x][y-1].strip()==c) & ((x,y-1) not in p1+p2): p1.append((x,y-1))
                 if y+1<=7: # right
                     if (tab[x][y+1].strip()==c) & ((x,y+1) not in p1+p2): p1.append((x,y+1))
+            print('Now:[',len(p1),']\n')
+            tab2 = []
+            for i in reversed(tab): tab2+=list(reversed(i))
+            tab2 = np.array(tab2, dtype='<U11')
+            tab2 = np.resize(tab2,(7,8))
             print(tab2,'\n')
 
         else:
@@ -44,6 +45,7 @@ def run():
                     if (tab[x][y-1].strip()==c) & ((x,y-1) not in p1+p2): p2.append((x,y-1))
                 if y+1<=7: # right
                     if (tab[x][y+1].strip()==c) & ((x,y+1) not in p1+p2): p2.append((x,y+1))
+            print('Now:(',len(p2),')\n')
             print(tab,'\n')
             turn = 0
         turn += 1
