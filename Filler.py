@@ -2,12 +2,39 @@ import numpy as np
 import random
 colours = ['red','green','yellow','blue','purple','black']
 
+def one(colors):
+        x = [i[:3] for i in colors]
+        s = [['Na' for i in range(8)] for i in range(7)]
+        ind = random.randint(0,len(x)-1)
+        num = x.pop(ind)
+        for row in range(len(s)):
+            for col in range(len(s[row])):
+                if row>0:
+                    num3 = s[row-1][col].strip()
+                    if num==num3:
+                        tind,tnum, bnum = ind,num, s[row][col-1].strip()
+                        bind = x.index(bnum)
+                        x.pop(bind)
+                        ind = random.randint(0,len(x)-1)
+                        num = x.pop(ind)
+                        x.insert(tind,tnum)
+                        x.insert(bind,bnum)
+                ind2 = random.randint(0,len(x)-1)
+                num2 = x.pop(ind2)
+                s[row][col] = num+'  '
+                x.insert(ind,num)
+                num, ind = num2,ind2
+        s = np.array(s,dtype='<U11')
+        return s
+	
 def run():
-    tab = [(random.choice(colours)[:3]+'  ') for i in range(56)]
-    tab[48],tab[7]='P-1','P-2'
-    tab = np.array(tab, dtype='<U11')
-    tab = np.resize(tab,(7,8))
+    while True:
+        try: tab = one(colours)
+        except: pass
+        else: break
+    tab[6][0], tab[0][7] = 'P-1','P-2'
     print(tab)
+    
     p1 = [(6,0)]
     p2 = [(0,7)]
     turn = 1
@@ -50,8 +77,23 @@ def run():
             turn = 0
         turn += 1
     else:
-        if len(p1) > len(p2): print(f"Player 1 won\t[ {len(p1)} ]")
-        elif len(p2) > len(p1): print(f"Player 2 won\t( {len(p2)} )")
+        if len(p1) > len(p2):
+            print(f"Player 1 won\t[ {len(p1)} ]")
+            return ('P1',len(p1))
+        elif len(p2) > len(p1):
+            print(f"Player 2 won\t( {len(p2)} )")
+            return ('P2',len(p2))
 
-    
-run()
+attempts = {}
+game = 0
+scoreboard = {'P1':0,'P2':0}
+
+while game<5:
+    print(scoreboard)
+    game+=1
+    attempts[game] = run()
+    log = sorted(attempts)[-1]
+    if (attempts[log][0]=='P1'): scoreboard['P1']+=1
+    elif (attempts[log][0]=='P2'): scoreboard['P2']+=1
+    x = input('Play again? ( y/n ) ')
+    game = (10,game)[x=='y']
